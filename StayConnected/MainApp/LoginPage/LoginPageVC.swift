@@ -9,6 +9,8 @@ import UIKit
 
 class LoginPageVC: UIViewController, UITextFieldDelegate {
     
+    private let viewModel = LoginPageViewModel()
+    
     private let loginLabel: UILabel = {
         var loginLabel = UILabel()
         loginLabel.text = "Log in"
@@ -129,6 +131,7 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupViewModelBindings()
         navigationController?.isNavigationBarHidden = true
         emailTextField.delegate = self
         passwordTextField.delegate = self
@@ -212,13 +215,19 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
     }
     
     func configureButton() {
-        //signup
+        // Sign Up Button
         signUpButton.addAction(UIAction(handler: { [weak self] action in
             self?.signupButtonPressed()
         }), for: .touchUpInside)
-        //togglePasswordTextField
+        
+        // Toggle Password Visibility Button
         togglePasswordVisibilityButton.addAction(UIAction(handler: { [weak self] action in
             self?.visibilityButtonPressed()
+        }), for: .touchUpInside)
+        
+        // Login Button
+        loginButton.addAction(UIAction(handler: { [weak self] action in
+            self?.loginButtonPressed()
         }), for: .touchUpInside)
     }
     
@@ -227,13 +236,38 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
         navigationController?.pushViewController(signupPage, animated: true)
     }
     
-    
     @objc private func visibilityButtonPressed() {
         passwordTextField.isSecureTextEntry.toggle()
+        
         let iconName = passwordTextField.isSecureTextEntry ? "eye.slash.fill" : "eye.fill"
         togglePasswordVisibilityButton.setImage(UIImage(systemName: iconName), for: .normal)
     }
     
+    func loginButtonPressed() {
+        guard let username = emailTextField.text, let password = passwordTextField.text else {
+            // You can add a check to show an error if either field is empty
+            return
+        }
+        viewModel.login(email: username, password: password)
+    }
+    
+    private func setupViewModelBindings() {
+        viewModel.errorMessage = { [weak self] message in
+            self?.showError(message)
+        }
+        
+        viewModel.onLoginSuccess = { [weak self] in
+            print("Login Successful!")
+            // Implement navigation to the next screen after successful login
+        }
+    }
+    
+    private func showError(_ message: String) {
+        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
+    }
     
     
     

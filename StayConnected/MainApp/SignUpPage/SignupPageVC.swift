@@ -9,6 +9,8 @@ import UIKit
 
 class SignupPageVC: UIViewController, UITextFieldDelegate {
     
+    private let signupViewModel = SignupViewModel()
+    
     private let signupLabel: UILabel = {
         var signupLabel = UILabel()
         signupLabel.text = "Sign Up"
@@ -283,7 +285,7 @@ class SignupPageVC: UIViewController, UITextFieldDelegate {
     func configureButton() {
         //signup
         signUpButton.addAction(UIAction(handler: { [weak self] action in
-            self?.signupButtonPressed()
+            self?.didTapSignUpButton()
         }), for: .touchUpInside)
         //togglePasswordTextField
         togglePasswordVisibilityButton.addAction(UIAction(handler: { [weak self] action in
@@ -299,10 +301,26 @@ class SignupPageVC: UIViewController, UITextFieldDelegate {
         }), for: .touchUpInside)
     }
     
-    
-    func signupButtonPressed() {
-        //navigateToMain
-    }
+    @objc private func didTapSignUpButton() {
+           signupViewModel.fullName = fullNameTextField.text ?? ""
+           signupViewModel.email = emailTextField.text ?? ""
+           signupViewModel.password = passwordTextField.text ?? ""
+           signupViewModel.confirmPassword = confirmPasswordTextField.text ?? ""
+           
+           if signupViewModel.validateSignup() {
+               // Proceed with the sign-up process (e.g., show a success message or navigate)
+               print("Signup successful")
+               // navigationController?.pushViewController(NextViewController(), animated: true)
+           } else {
+               showAlert(message: "Please check your input. All fields must be valid.")
+           }
+       }
+       
+       private func showAlert(message: String) {
+           let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+           alert.addAction(UIAlertAction(title: "OK", style: .default))
+           present(alert, animated: true)
+       }
     
     func backButtonPressed() {
         navigationController?.popViewController(animated: true)
