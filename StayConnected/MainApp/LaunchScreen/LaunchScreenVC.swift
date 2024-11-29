@@ -27,7 +27,7 @@ class LaunchScreenVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(red: 78/255, green: 83/255, blue: 162/255, alpha: 1)
+        view.backgroundColor = .backgroundColor
 
         view.addSubview(stayConnectedLogo)
         view.addSubview(stayConnectedLabel)
