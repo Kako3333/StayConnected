@@ -7,6 +7,9 @@
 
 import UIKit
 
+//test@example.com
+// Password123
+
 class LoginPageVC: UIViewController, UITextFieldDelegate {
     
     private let viewModel = LoginPageViewModel()
@@ -258,7 +261,12 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
         
         viewModel.onLoginSuccess = { [weak self] in
             print("Login Successful!")
+            
             // Implement navigation to the next screen after successful login
+            let  mainPage = MainPageVC()
+            // Navigate to MainPageVC after successful login
+            self?.navigationController?.pushViewController(mainPage, animated: true)
+            
         }
     }
     
