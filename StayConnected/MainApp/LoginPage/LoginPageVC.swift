@@ -129,6 +129,7 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationController?.isNavigationBarHidden = true
         emailTextField.delegate = self
         passwordTextField.delegate = self
         
@@ -154,7 +155,7 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
         NSLayoutConstraint.activate([
             loginLabel.widthAnchor.constraint(equalToConstant: 111),
             loginLabel.heightAnchor.constraint(equalToConstant: 35),
-            loginLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 187),
+            loginLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 140),
             loginLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             emailLabel.topAnchor.constraint(equalTo: loginLabel.bottomAnchor, constant: 70),
@@ -190,7 +191,7 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
             signUpButton.trailingAnchor.constraint(equalTo: passwordTextField.trailingAnchor, constant: -2),
             
             loginButton.heightAnchor.constraint(equalToConstant: 60),
-            loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -70),
+            loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -60),
             loginButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 24),
             loginButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -24),
         ])
