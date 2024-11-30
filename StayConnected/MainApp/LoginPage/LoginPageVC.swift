@@ -10,6 +10,10 @@ import UIKit
 //test@example.com
 // Password123
 
+extension Notification.Name {
+    static let loginSuccess = Notification.Name("loginSuccess")
+}
+
 class LoginPageVC: UIViewController, UITextFieldDelegate {
     
     private let viewModel = LoginPageViewModel()
@@ -120,7 +124,6 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
         return passwordTextField
     }()
     
-    
     private let loginButton: UIButton = {
         let loginButton = UIButton()
         loginButton.layer.cornerRadius = 12
@@ -201,7 +204,6 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
             loginButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 24),
             loginButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -24),
         ])
-        
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -218,17 +220,14 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
     }
     
     func configureButton() {
-        // Sign Up Button
         signUpButton.addAction(UIAction(handler: { [weak self] action in
             self?.signupButtonPressed()
         }), for: .touchUpInside)
         
-        // Toggle Password Visibility Button
         togglePasswordVisibilityButton.addAction(UIAction(handler: { [weak self] action in
             self?.visibilityButtonPressed()
         }), for: .touchUpInside)
         
-        // Login Button
         loginButton.addAction(UIAction(handler: { [weak self] action in
             self?.loginButtonPressed()
         }), for: .touchUpInside)
@@ -248,7 +247,7 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
     
     func loginButtonPressed() {
         guard let username = emailTextField.text, let password = passwordTextField.text else {
-            // You can add a check to show an error if either field is empty
+
             return
         }
         viewModel.login(email: username, password: password)
@@ -262,11 +261,7 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
         viewModel.onLoginSuccess = { [weak self] in
             print("Login Successful!")
             
-            // Implement navigation to the next screen after successful login
-            let  mainPage = MainPageVC()
-            // Navigate to MainPageVC after successful login
-            self?.navigationController?.pushViewController(mainPage, animated: true)
-            
+            NotificationCenter.default.post(name: .loginSuccess, object: nil)
         }
     }
     
@@ -276,12 +271,7 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
         alertController.addAction(okAction)
         present(alertController, animated: true, completion: nil)
     }
-    
-    
-    
 }
-
-
 
 
 
