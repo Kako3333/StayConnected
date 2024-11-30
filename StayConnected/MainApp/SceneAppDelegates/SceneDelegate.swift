@@ -12,7 +12,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
         guard let scene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: scene)
@@ -20,25 +19,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let launchScreenVC = LaunchScreenVC()
         window?.rootViewController = launchScreenVC
         window?.makeKeyAndVisible()
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             let loginPageVC = LoginPageVC()
             let navigationController = UINavigationController(rootViewController: loginPageVC)
             navigationController.isNavigationBarHidden = true
+            
+
             self.window?.rootViewController = navigationController
+            
+
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(self.showMainTabBarController),
+                name: .loginSuccess,
+                object: nil
+            )
         }
     }
     
+
+    @objc private func showMainTabBarController() {
+        let tabBarController = MainTabBarController()
+        tabBarController.modalPresentationStyle = .fullScreen
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
+    }
+    
     func sceneDidDisconnect(_ scene: UIScene) {}
-    
     func sceneDidBecomeActive(_ scene: UIScene) {}
-    
     func sceneWillResignActive(_ scene: UIScene) {}
-    
     func sceneWillEnterForeground(_ scene: UIScene) {}
-    
     func sceneDidEnterBackground(_ scene: UIScene) {}
-    
-    
 }
+
 
