@@ -58,7 +58,7 @@ class HomeTopicCell: UITableViewCell {
 
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
             titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: answeredCheckmark.leadingAnchor, constant: -8),
 
             answeredCheckmark.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),

@@ -22,7 +22,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             let loginPageVC = LoginPageVC()
-            let navigationController = UINavigationController(rootViewController: loginPageVC)
+            let homePageVC = HomeViewController()
+            let navigationController = UINavigationController(rootViewController: MainTabBarController())
             navigationController.isNavigationBarHidden = true
             
 

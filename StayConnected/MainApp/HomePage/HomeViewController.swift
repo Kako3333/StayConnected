@@ -113,10 +113,8 @@ class HomeViewController: UIViewController {
     }
 
     @objc private func addQuestionTapped() {
-        let addQuestionVC = UIViewController()
-        addQuestionVC.view.backgroundColor = .white
-        addQuestionVC.title = "Add Question"
-        navigationController?.pushViewController(addQuestionVC, animated: true)
+        let addQuestionVC = AddQuestionVC()
+        navigationController?.present(addQuestionVC, animated: true)
     }
 
     private func setupLeftAlignedTitle(_ title: String) {
