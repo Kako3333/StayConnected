@@ -32,7 +32,7 @@ class CollectionTagCell: UICollectionViewCell {
             button.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: 0),
             button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 0),
             
-            button.heightAnchor.constraint(equalToConstant: 10)
+            button.heightAnchor.constraint(equalToConstant: 25)
         ])
     }
     

@@ -35,10 +35,10 @@ class TagsCell: UITableViewCell {
         
         NSLayoutConstraint.activate([
             tagsCollection.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-            tagsCollection.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            tagsCollection.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 15),
             tagsCollection.rightAnchor.constraint(equalTo: contentView.rightAnchor),
             tagsCollection.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            tagsCollection.heightAnchor.constraint(equalToConstant: 100)
+            tagsCollection.heightAnchor.constraint(equalToConstant: 80)
         ])
     }
     
@@ -63,18 +63,10 @@ extension TagsCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayo
         let tag = tags[indexPath.row]
         
         let width = tag.size(withAttributes: [.font: UIFont.systemFont(ofSize: 14)]).width + 40
-        return CGSize(width: width, height: 30) // Adjust the height as needed
+        return CGSize(width: width, height: 25)
     }
     
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//        return 5
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-//        return 5  // 10px vertical spacing between rows
-//    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 1, left: 0, bottom: 1, right: 0)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 20)
     }
 }
