@@ -20,7 +20,7 @@ struct Topic {
 }
 
 class HomeViewModel {
-    private(set) var topics: [Topic] = []
+    var topics: [Topic] = []
     private var allTopics: [Topic] = []
     var onTopicsChanged: (() -> Void)?
     

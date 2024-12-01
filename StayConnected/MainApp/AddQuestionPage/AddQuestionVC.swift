@@ -7,8 +7,16 @@
 
 import UIKit
 
+protocol AddQuestionDelegate: AnyObject {
+    func didAddQuestion(_ topic: Topic)
+}
+
 class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    weak var delegate: AddQuestionDelegate?
+    private var subjectCell: SubjectCell?
+    private var homeViewModel: HomeViewModel?
+
     private let headerView: UIView = {
         let headerView = UIView()
         headerView.backgroundColor = .offWhite
@@ -68,8 +76,6 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         return sendButton
     }()
     
-    private var subjectCell: SubjectCell?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -77,6 +83,12 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         setupTableView()
         questionTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
         subjectCell?.textField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
+        sendButton.addTarget(self, action: #selector(sendButtonPressed), for: .touchUpInside)
+        
+        homeViewModel?.onTopicsChanged = { [weak self] in
+            self?.tableView.reloadData()
+        }
+
     }
     
     private func setupUI() {
@@ -139,6 +151,24 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             sendButton.tintColor = .systemGray4
         }
     }
+    
+    @objc private func sendButtonPressed() {
+        guard
+            let subjectText = subjectCell?.textField.text, !subjectText.isEmpty,
+            let questionText = questionTextField.text, !questionText.isEmpty
+        else { return }
+
+        let newTopic = Topic(
+            title: questionText,
+            tags: [subjectText, "zaza"],
+            replies: 0,
+            isAnswered: false
+        )
+        delegate?.didAddQuestion(newTopic)
+        dismiss(animated: true, completion: nil)
+        print("pressed")
+    }
+
     
     @objc private func textFieldsDidChange() {
         updateSendButtonState()
