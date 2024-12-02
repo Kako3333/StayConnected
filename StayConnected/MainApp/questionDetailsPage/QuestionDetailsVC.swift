@@ -14,11 +14,14 @@ struct Reply {
     let date: String
 }
 
-
 class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     private var topic: Topic?
-    private var replies: [Reply] = []
+    private var replies: [Reply] = [] {
+        didSet {
+            replyTableView.reloadData()
+        }
+    }
     
     private let backButton: UIButton = {
         let backButton = UIButton()
@@ -98,13 +101,15 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
         super.viewDidLoad()
         backButton.addTarget(self, action: #selector(backButtonPressed), for: .touchUpInside)
         sendButton.addTarget(self, action: #selector(sendButtonPressed), for: .touchUpInside)
-        navigationController?.isNavigationBarHidden = true
         view.backgroundColor = .white
         setupUI()
+        setupTableView()
+        setupDismissKeyboardGesture()
     }
     
     private func setupUI() {
-        view.addSubview(backButton)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: backButton)
+        
         view.addSubview(questionView)
         questionView.addSubview(questionTitle)
         questionView.addSubview(questionLabel)
@@ -114,14 +119,9 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
         replyTextField.addSubview(sendButton)
         
         NSLayoutConstraint.activate([
-            backButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20),
-            backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
-            backButton.heightAnchor.constraint(equalToConstant: 30),
-            backButton.widthAnchor.constraint(equalToConstant: 30),
-            
             questionView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 16),
             questionView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
-            questionView.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: 10),
+            questionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             
             questionTitle.topAnchor.constraint(equalTo: questionView.topAnchor),
             questionTitle.leftAnchor.constraint(equalTo: questionView.leftAnchor),
@@ -144,6 +144,7 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
             replyTextField.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 17),
             replyTextField.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -17),
             replyTextField.heightAnchor.constraint(equalToConstant: 43),
+            replyTextField.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -35),
             
             sendButton.centerYAnchor.constraint(equalTo: replyTextField.centerYAnchor),
             sendButton.rightAnchor.constraint(equalTo: replyTextField.rightAnchor, constant: -10),
@@ -155,13 +156,24 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
     }
     
     @objc private func sendButtonPressed() {
-        guard
-            let replyText = replyTextField.text, !replyText.isEmpty
-        else { return }
+        guard let replyText = replyTextField.text, !replyText.isEmpty else { return }
         
-//        let newReply = Reply(profilePic: UIImage(named: "profileIcon"), userName: "", text: <#T##String#>, date: <#T##String#>)
+        let newReply = Reply(
+            profilePic: UIImage(named: "pfp")!,
+            userName: "ShawnHoward",
+            text: replyText,
+            date: "Monday, 9 May 2024"
+        )
         
         print("pressed")
+        replies.append(newReply)
+        replyTableView.reloadData()
+        replyTextField.text = nil
+        
+        DispatchQueue.main.async {
+            self.replyTableView.reloadData()
+            self.replyTextField.text = nil
+        }
     }
     
     func configure(with topic: Topic) {
@@ -179,24 +191,37 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
     private func setupTableView() {
         replyTableView.dataSource = self
         replyTableView.delegate = self
-        
         replyTableView.register(ReplyCell.self, forCellReuseIdentifier: ReplyCell.identifier)
-        
-        replyTableView.rowHeight = UITableView.automaticDimension
-        replyTableView.estimatedRowHeight = 100
+        replyTableView.backgroundColor = .clear
+    }
+    
+    private func setupDismissKeyboardGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
     //TableView methods
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         replies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ReplyCell.identifier, for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ReplyCell.identifier, for: indexPath) as? ReplyCell else {
+                fatalError(":(")
+            }
         
         let reply = replies[indexPath.row]
-        cell.textLabel?.text = "\(reply.userName): \(reply.text)"
+        cell.configure(with: reply)
         
         return cell
     }

@@ -11,35 +11,76 @@ class ReplyCell: UITableViewCell {
     
     static let identifier = "ReplyCell"
     
+    let replyView: UIView = {
+        let replyView = UIView()
+        replyView.backgroundColor = .clear
+        replyView.translatesAutoresizingMaskIntoConstraints = false
+        return replyView
+    }()
+    
     let userNameLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+        let userNameLabel = UILabel()
+        userNameLabel.font = UIFont.systemFont(ofSize: 15, weight: .semibold)
+        userNameLabel.textColor = .black
+        userNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        return userNameLabel
     }()
     
     let replyTextLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+        let replyTextLabel = UILabel()
+        replyTextLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        replyTextLabel.textColor = .lightGrayText
+        replyTextLabel.numberOfLines = 0
+        replyTextLabel.translatesAutoresizingMaskIntoConstraints = false
+        return replyTextLabel
+    }()
+    
+    let dateReplied: UILabel = {
+        let dateReplied = UILabel()
+        dateReplied.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+        dateReplied.textColor = .lightGrayText
+        dateReplied.translatesAutoresizingMaskIntoConstraints = false
+        return dateReplied
+    }()
+    
+    let profileImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.layer.cornerRadius = 17.5
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        contentView.addSubview(userNameLabel)
-        contentView.addSubview(replyTextLabel)
+        contentView.addSubview(replyView)
+        replyView.addSubview(profileImageView)
+        replyView.addSubview(userNameLabel)
+        replyView.addSubview(replyTextLabel)
+        replyView.addSubview(dateReplied)
         
         NSLayoutConstraint.activate([
-            userNameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            userNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            userNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
+            replyView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            replyView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
+            replyView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
+            replyView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             
-            replyTextLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 4),
-            replyTextLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            replyTextLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8),
-            replyTextLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+            profileImageView.topAnchor.constraint(equalTo: replyView.topAnchor, constant: 3),
+            profileImageView.leftAnchor.constraint(equalTo: replyView.leftAnchor, constant: 3),
+            profileImageView.widthAnchor.constraint(equalToConstant: 35),
+            profileImageView.heightAnchor.constraint(equalToConstant: 35),
+            
+            userNameLabel.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: -8),
+            userNameLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 3),
+            
+            dateReplied.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor, constant: 8),
+            dateReplied.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 3),
+            
+            replyTextLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8),
+            replyTextLabel.leftAnchor.constraint(equalTo: replyView.leftAnchor),
+            replyTextLabel.rightAnchor.constraint(equalTo: replyView.rightAnchor),
+            replyTextLabel.bottomAnchor.constraint(equalTo: replyView.bottomAnchor, constant: -8)
         ])
     }
     
@@ -48,7 +89,9 @@ class ReplyCell: UITableViewCell {
     }
     
     func configure(with reply: Reply) {
+        profileImageView.image = reply.profilePic
         userNameLabel.text = reply.userName
         replyTextLabel.text = reply.text
+        dateReplied.text = reply.date
     }
 }
