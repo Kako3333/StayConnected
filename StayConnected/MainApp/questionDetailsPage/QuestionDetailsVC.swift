@@ -14,7 +14,6 @@ struct Reply {
     let date: String
 }
 
-
 class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     private var topic: Topic?
