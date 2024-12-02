@@ -48,16 +48,17 @@ class EmptyStateView: UIView {
         addSubview(messageLabel)
         
         NSLayoutConstraint.activate([
+
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 40),
+            imageView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -100),
             imageView.widthAnchor.constraint(equalToConstant: 238),
             imageView.heightAnchor.constraint(equalToConstant: 230),
             
-            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
+            titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             
-            messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
+            messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
             messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20)
         ])
@@ -69,4 +70,3 @@ class EmptyStateView: UIView {
         messageLabel.text = message
     }
 }
-

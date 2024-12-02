@@ -8,6 +8,7 @@
 import UIKit
 
 class MainTabBarController: UITabBarController {
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBarAppearance()
@@ -15,21 +16,23 @@ class MainTabBarController: UITabBarController {
     }
     
     private func setupTabBarAppearance() {
-        tabBar.backgroundColor = UIColor.systemGray6
+        tabBar.backgroundColor = UIColor(hex: "#F3F2F1")
         tabBar.tintColor = UIColor(named: "PrimaryColor")
         tabBar.unselectedItemTintColor = UIColor.lightGray
+        
+        tabBar.layer.cornerRadius = 20
+        tabBar.layer.masksToBounds = true
+        tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
     
     private func setupViewControllers() {
-        // Home Page
         let homeVC = UINavigationController(rootViewController: HomeViewController())
         homeVC.tabBarItem = UITabBarItem(
             title: "Home",
-            image: UIImage(named: "hemoIcon"),
+            image: UIImage(named: "homeIcon"),
             selectedImage: UIImage(named: "homeIconSelected")
         )
         
-
         let leaderboardVC = UIViewController()
         leaderboardVC.view.backgroundColor = .white
         leaderboardVC.title = "Leaderboard"
@@ -39,14 +42,15 @@ class MainTabBarController: UITabBarController {
             selectedImage: UIImage(named: "leaderboardIconSelected")
         )
         
-        let profileVC = ProfileViewController()
-        profileVC.view.backgroundColor = .white
-        profileVC.title = "Profile"
+        let profileVC = UINavigationController(rootViewController: ProfileViewController())
         profileVC.tabBarItem = UITabBarItem(
             title: "Profile",
             image: UIImage(named: "profileIcon"),
             selectedImage: UIImage(named: "profileIconSelected")
         )
+        
         viewControllers = [homeVC, leaderboardVC, profileVC]
     }
 }
+
+
