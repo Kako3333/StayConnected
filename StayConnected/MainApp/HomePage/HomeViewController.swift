@@ -147,6 +147,14 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         cell.configure(with: viewModel.topics[indexPath.row])
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let questionDetailsPage = QuestionDetailsVC()
+        let selectedQuestion = viewModel.topics[indexPath.row]
+        questionDetailsPage.configure(with: selectedQuestion)
+        navigationController?.pushViewController(questionDetailsPage, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
 }
 
 extension HomeViewController: UISearchBarDelegate {
