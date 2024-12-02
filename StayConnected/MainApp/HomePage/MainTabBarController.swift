@@ -39,7 +39,7 @@ class MainTabBarController: UITabBarController {
             selectedImage: UIImage(named: "leaderboardIconSelected")
         )
         
-        let profileVC = UIViewController()
+        let profileVC = ProfileViewController()
         profileVC.view.backgroundColor = .white
         profileVC.title = "Profile"
         profileVC.tabBarItem = UITabBarItem(
