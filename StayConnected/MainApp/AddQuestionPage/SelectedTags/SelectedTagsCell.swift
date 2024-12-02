@@ -1,15 +1,15 @@
 //
-//  CollectionTagCell.swift
+//  selectedTagsCell.swift
 //  StayConnected
 //
-//  Created by Gio Kakaladze on 30.11.24.
+//  Created by Gio Kakaladze on 01.12.24.
 //
 
 import UIKit
 
-class CollectionTagCell: UICollectionViewCell {
+class SelectedTagsCell: UICollectionViewCell {
     
-    static let identifier = "CollectionTagCell"
+    static let identifier = "SelectedTagsCell"
     
     private let button: UIButton = {
         let button = UIButton()
@@ -45,4 +45,3 @@ class CollectionTagCell: UICollectionViewCell {
         button.setTitle(text, for: .normal)
     }
 }
-
