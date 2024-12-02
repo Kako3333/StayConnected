@@ -136,21 +136,31 @@ class HomeViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
-            emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyStateView.topAnchor.constraint(equalTo: view.topAnchor),
+            emptyStateView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
     private func setupBindings() {
-        viewModel.onTopicsChanged = { [weak self] in
-            DispatchQueue.main.async {
-                self?.tableView.reloadData()
-                let isEmpty = self?.viewModel.isEmptyState ?? true
-                self?.emptyStateView.isHidden = !isEmpty
-                self?.tableView.isHidden = isEmpty
+            viewModel.onTopicsChanged = { [weak self] in
+                DispatchQueue.main.async {
+                    let isEmpty = self?.viewModel.isEmptyState ?? true
+                    self?.emptyStateView.isHidden = !isEmpty
+                    self?.tableView.isHidden = isEmpty
+                    
+                    if isEmpty {
+                        self?.emptyStateView.configure(
+                            image: UIImage(named: "EmptyPersonal")!,
+                            title: "Got a question in mind?",
+                            message: "Ask it and wait for like-minded people to answer"
+                        )
+                    }
+                    self?.tableView.reloadData()
+                }
             }
         }
-    }
     
     @objc private func segmentChanged(_ sender: UISegmentedControl) {
         let selectedTab: HomeTab = sender.selectedSegmentIndex == 0 ? .general : .personal
