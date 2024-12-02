@@ -57,19 +57,20 @@ class HomeTopicCell: UITableViewCell {
         contentView.addSubview(answeredCheckmark)
 
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
-            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: answeredCheckmark.leadingAnchor, constant: -8),
+            repliesLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            repliesLabel.trailingAnchor.constraint(equalTo: answeredCheckmark.leadingAnchor, constant: -8),
+            repliesLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
 
             answeredCheckmark.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             answeredCheckmark.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             answeredCheckmark.widthAnchor.constraint(equalToConstant: 24),
             answeredCheckmark.heightAnchor.constraint(equalToConstant: 24),
 
-            repliesLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
-            repliesLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.topAnchor.constraint(equalTo: repliesLabel.bottomAnchor, constant: 8),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 
-            tagStackView.topAnchor.constraint(equalTo: repliesLabel.bottomAnchor, constant: 8),
+            tagStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
             tagStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             tagStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
         ])
@@ -85,14 +86,18 @@ class HomeTopicCell: UITableViewCell {
             let tagLabel = UILabel()
             tagLabel.text = tag
             tagLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-            tagLabel.textColor = .white
-            tagLabel.backgroundColor = .systemBlue
+            tagLabel.textColor = UIColor(hex: "4E53A2")
+            tagLabel.backgroundColor = UIColor(hex: "EDEBFF")
             tagLabel.layer.cornerRadius = 8
             tagLabel.clipsToBounds = true
             tagLabel.textAlignment = .center
             tagLabel.setContentHuggingPriority(.required, for: .horizontal)
             tagLabel.translatesAutoresizingMaskIntoConstraints = false
+            tagLabel.heightAnchor.constraint(equalToConstant: 28).isActive = true
+            tagLabel.widthAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
             tagStackView.addArrangedSubview(tagLabel)
         }
     }
 }
+
+

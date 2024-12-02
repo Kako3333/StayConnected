@@ -11,12 +11,19 @@ class TagsCell: UITableViewCell {
     
     static let identifier = "TagsCell"
     
-    var tags: [String] = ["Swift", "UIKit", "iOS", "SwiftUI", "UI/UX", "FrontEnd", "BackEnd"]
+    var tags: [String] = ["Swift", "UIKit", "iOS", "SwiftUI", "UI/UX", "FrontEnd", "BackEnd"] {
+        didSet {
+            selectedTagsCell?.selectedTagsCollection.reloadData()
+            tagsCollection.reloadData()
+        }
+    }
+    
+    var onTagRemoved: ((String) -> Void)?
+    var selectedTagsCell: TagCell?
     
     private let tagsCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.sectionInset = .zero
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
@@ -56,6 +63,7 @@ extension TagsCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayo
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionTagCell.identifier, for: indexPath) as! CollectionTagCell
         cell.configure(with: tags[indexPath.row])
+        self.selectionStyle = .none
         return cell
     }
     
@@ -68,5 +76,17 @@ extension TagsCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayo
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 20, right: 20)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        //removing
+        let selectedTag = tags[indexPath.row]
+        tags.remove(at: indexPath.row)
+        
+        //appending
+        selectedTagsCell?.tags.append(selectedTag)
+        tagsCollection.reloadData()
+        selectedTagsCell?.selectedTagsCollection.reloadData()
+        selectedTagsCell?.selectedTagsCollection.layoutIfNeeded()
     }
 }

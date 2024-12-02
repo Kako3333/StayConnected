@@ -22,6 +22,45 @@ class HomeViewController: UIViewController {
         return control
     }()
     
+    private let tagsView: UIView = {
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        
+        let tags = ["Frontend", "iOS", "SwiftUI", "Backend", "UIKit"]
+        let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 8
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        
+        tags.forEach { tag in
+            let label = UILabel()
+            label.text = tag
+            label.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+            label.textColor = UIColor(hex: "4E53A2")
+            label.textAlignment = .center
+            label.backgroundColor = UIColor(hex: "EDEBFF")
+            label.layer.cornerRadius = 8
+            label.layer.masksToBounds = true
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.heightAnchor.constraint(equalToConstant: 28).isActive = true
+            label.widthAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
+            
+            stackView.addArrangedSubview(label)
+        }
+        
+        container.addSubview(stackView)
+        
+        NSLayoutConstraint.activate([
+            stackView.topAnchor.constraint(equalTo: container.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor)
+        ])
+        
+        return container
+    }()
+    
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
         searchBar.placeholder = "Search"
@@ -62,6 +101,7 @@ class HomeViewController: UIViewController {
         
         view.addSubview(segmentedControl)
         view.addSubview(searchBar)
+        view.addSubview(tagsView)
         view.addSubview(tableView)
         view.addSubview(emptyStateView)
         
@@ -86,7 +126,12 @@ class HomeViewController: UIViewController {
             searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             
-            tableView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 16),
+            tagsView.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 16),
+            tagsView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            tagsView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            tagsView.heightAnchor.constraint(equalToConstant: 44),
+            
+            tableView.topAnchor.constraint(equalTo: tagsView.bottomAnchor, constant: 16),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -121,7 +166,7 @@ class HomeViewController: UIViewController {
     private func setupLeftAlignedTitle(_ title: String) {
         let titleLabel = UILabel()
         titleLabel.text = title
-        titleLabel.font = UIFont.systemFont(ofSize: 24, weight: .bold)
+        titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
         titleLabel.textColor = .black
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -135,6 +180,7 @@ class HomeViewController: UIViewController {
     }
 }
 
+
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.topics.count
@@ -146,6 +192,14 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         }
         cell.configure(with: viewModel.topics[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let questionDetailsPage = QuestionDetailsVC()
+        let selectedQuestion = viewModel.topics[indexPath.row]
+        questionDetailsPage.configure(with: selectedQuestion)
+        navigationController?.pushViewController(questionDetailsPage, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 

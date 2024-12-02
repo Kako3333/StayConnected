@@ -11,7 +11,7 @@ protocol AddQuestionDelegate: AnyObject {
     func didAddQuestion(_ topic: Topic)
 }
 
-class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     weak var delegate: AddQuestionDelegate?
     private var subjectCell: SubjectCell?
@@ -46,7 +46,8 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.separatorStyle = .singleLine
-        tableView.isScrollEnabled = false
+        tableView.isScrollEnabled = true
+        tableView.isUserInteractionEnabled = true
         return tableView
     }()
     
@@ -79,16 +80,13 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        questionTextField.delegate = self
+        subjectCell?.textField.delegate = self
         setupUI()
         setupTableView()
         questionTextField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
         subjectCell?.textField.addTarget(self, action: #selector(textFieldsDidChange), for: .editingChanged)
         sendButton.addTarget(self, action: #selector(sendButtonPressed), for: .touchUpInside)
-        
-        homeViewModel?.onTopicsChanged = { [weak self] in
-            self?.tableView.reloadData()
-        }
-
     }
     
     private func setupUI() {
@@ -159,14 +157,30 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         else { return }
 
         let newTopic = Topic(
-            title: questionText,
-            tags: [subjectText, "zaza"],
+            title: subjectText,
+            tags: [subjectText],
             replies: 0,
-            isAnswered: false
+            isAnswered: false,
+            question: questionText
         )
         delegate?.didAddQuestion(newTopic)
         dismiss(animated: true, completion: nil)
         print("pressed")
+    }
+    
+    private func setupDismissKeyboardGesture() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tapGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(tapGesture)
+    }
+    
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 
     
@@ -189,10 +203,12 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         case 1:
             let cell = tableView.dequeueReusableCell(withIdentifier: TagCell.identifier, for: indexPath) as! TagCell
             cell.selectionStyle = .none
+            cell.isUserInteractionEnabled = true
             return cell
         case 2:
             let cell = tableView.dequeueReusableCell(withIdentifier: TagsCell.identifier, for: indexPath) as! TagsCell
             cell.selectionStyle = .none
+            cell.isUserInteractionEnabled = true
             return cell
         default:
             return UITableViewCell()

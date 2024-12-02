@@ -25,7 +25,7 @@ class MainTabBarController: UITabBarController {
         let homeVC = UINavigationController(rootViewController: HomeViewController())
         homeVC.tabBarItem = UITabBarItem(
             title: "Home",
-            image: UIImage(named: "homeIcon"),
+            image: UIImage(named: "hemoIcon"),
             selectedImage: UIImage(named: "homeIconSelected")
         )
         
@@ -39,7 +39,7 @@ class MainTabBarController: UITabBarController {
             selectedImage: UIImage(named: "leaderboardIconSelected")
         )
         
-        let profileVC = UIViewController()
+        let profileVC = ProfileViewController()
         profileVC.view.backgroundColor = .white
         profileVC.title = "Profile"
         profileVC.tabBarItem = UITabBarItem(
@@ -47,7 +47,6 @@ class MainTabBarController: UITabBarController {
             image: UIImage(named: "profileIcon"),
             selectedImage: UIImage(named: "profileIconSelected")
         )
-        
         viewControllers = [homeVC, leaderboardVC, profileVC]
     }
 }
