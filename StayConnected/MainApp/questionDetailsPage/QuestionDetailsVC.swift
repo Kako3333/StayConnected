@@ -7,17 +7,33 @@
 
 import UIKit
 
-struct Reply {
-    let profilePic: UIImage
+struct Reply: Codable {
+    var profilePicData: Data
     let userName: String
     let text: String
     let date: String
+    var status: String
+    
+    var profilePic: UIImage? {
+        return UIImage(data: profilePicData)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case profilePicData = "profilePic"
+        case userName
+        case text
+        case date
+        case status
+    }
 }
 
 class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     private var topic: Topic?
-    private var replies: [Reply] = [] {
+    private var replies: [Reply] = [
+        Reply(profilePicData: UIImage(named: "pfp")!.pngData()!, userName: "Alice", text: "Great work!", date: "Today", status: ""),
+        Reply(profilePicData: UIImage(named: "pfp")!.pngData()!, userName: "Bob", text: "Thanks!", date: "Yesterday", status: "")
+    ] {
         didSet {
             replyTableView.reloadData()
         }
@@ -105,6 +121,8 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
         setupUI()
         setupTableView()
         setupDismissKeyboardGesture()
+        //userdefaulsFunc
+        loadReplies()
     }
     
     private func setupUI() {
@@ -159,14 +177,15 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
         guard let replyText = replyTextField.text, !replyText.isEmpty else { return }
         
         let newReply = Reply(
-            profilePic: UIImage(named: "pfp")!,
+            profilePicData: UIImage(named: "pfp")!.pngData()!,
             userName: "ShawnHoward",
             text: replyText,
-            date: "Monday, 9 May 2024"
+            date: "Monday, 9 May 2024",
+            status: ""
         )
         
-        print("pressed")
         replies.append(newReply)
+        saveReplies()
         replyTableView.reloadData()
         replyTextField.text = nil
         
@@ -175,6 +194,40 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
             self.replyTextField.text = nil
         }
     }
+    
+    func saveReplies() {
+        let encoder = JSONEncoder()
+        do {
+            var repliesToSave = replies
+            
+            // Convert the UIImage to Data for each reply
+            for index in repliesToSave.indices {
+                if let image = repliesToSave[index].profilePic {
+                    repliesToSave[index].profilePicData = image.pngData() ?? Data() // Convert to PNG data
+                }
+            }
+            
+            let data = try encoder.encode(repliesToSave)
+            UserDefaults.standard.set(data, forKey: "savedReplies")
+        } catch {
+            print("Error saving replies: \(error)")
+        }
+    }
+    
+    
+    func loadReplies() {
+        if let savedRepliesData = UserDefaults.standard.data(forKey: "savedReplies") {
+            let decoder = JSONDecoder()
+            do {
+                var decodedReplies = try decoder.decode([Reply].self, from: savedRepliesData)
+                
+                replies = decodedReplies
+            } catch {
+                print("Error loading replies: \(error)")
+            }
+        }
+    }
+    
     
     func configure(with topic: Topic) {
         self.topic = topic
@@ -217,13 +270,59 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ReplyCell.identifier, for: indexPath) as? ReplyCell else {
-                fatalError(":(")
-            }
+            fatalError(":(")
+        }
         
         let reply = replies[indexPath.row]
         cell.configure(with: reply)
         
+        if reply.status == "Accepted" {
+            cell.statusLabel.text = "Accepted"
+            cell.statusLabel.textColor = .backgroundColor
+        } else if reply.status == "Rejected" {
+            cell.statusLabel.text = "Rejected"
+            cell.statusLabel.textColor = .systemRed
+        } else {
+            cell.statusLabel.text = ""
+        }
+        
+        
         return cell
+    }
+    
+    //swipe
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let reply = replies[indexPath.row]
+        
+        let swipeAction: UIContextualAction
+        if reply.status == "Accepted" {
+            swipeAction = UIContextualAction(style: .normal, title: "Reject") { [weak self] (_, _, completionHandler) in
+                
+                self?.replies[indexPath.row].status = "Rejected"
+                
+                if let cell = tableView.cellForRow(at: indexPath) as? ReplyCell {
+                    cell.statusLabel.text = "Rejected"
+                    cell.statusLabel.textColor = .systemRed
+                }
+                completionHandler(true)
+            }
+            swipeAction.backgroundColor = .systemRed
+        } else {
+            swipeAction = UIContextualAction(style: .normal, title: "Accept") { [weak self] (_, _, completionHandler) in
+                
+                self?.replies[indexPath.row].status = "Accepted"
+                
+                if let cell = tableView.cellForRow(at: indexPath) as? ReplyCell {
+                    cell.statusLabel.text = "Accepted"
+                    cell.statusLabel.textColor = .backgroundColor
+                }
+                completionHandler(true)
+            }
+            swipeAction.backgroundColor = .backgroundColor
+        }
+        let swipeConfig = UISwipeActionsConfiguration(actions: [swipeAction])
+        swipeConfig.performsFirstActionWithFullSwipe = false
+        return swipeConfig
     }
 }
 

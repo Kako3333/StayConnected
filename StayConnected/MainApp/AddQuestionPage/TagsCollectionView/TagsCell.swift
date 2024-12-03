@@ -84,9 +84,12 @@ extension TagsCell: UICollectionViewDataSource, UICollectionViewDelegateFlowLayo
         tags.remove(at: indexPath.row)
         
         //appending
-        selectedTagsCell?.tags.append(selectedTag)
+        TagCell.tags.append(selectedTag)
+        
         tagsCollection.reloadData()
         selectedTagsCell?.selectedTagsCollection.reloadData()
         selectedTagsCell?.selectedTagsCollection.layoutIfNeeded()
+        NotificationCenter.default.post(name: .tagsUpdated, object: nil)
     }
+
 }
