@@ -12,12 +12,13 @@ enum HomeTab {
     case personal
 }
 
-struct Topic {
+struct Topic: Codable {
     let title: String
     let tags: [String]
     let replies: Int
     let isAnswered: Bool
     let question: String
+    var id: String
 }
 
 class HomeViewModel {
@@ -29,9 +30,19 @@ class HomeViewModel {
         return topics.isEmpty
     }
     
+    private func getSavedTopics() -> [Topic] {
+        if let savedData = UserDefaults.standard.array(forKey: "savedTopics") as? [Data] {
+            let decoder = JSONDecoder()
+            let topics = savedData.compactMap { try? decoder.decode(Topic.self, from: $0) }
+            return topics
+        }
+        return []
+    }
+    
     func loadTopics(for tab: HomeTab) {
         allTopics = MockAPI.getTopics(for: tab)
-        topics = allTopics
+        let savedTopics = getSavedTopics()
+        topics = allTopics + savedTopics
         onTopicsChanged?()
     }
     
@@ -61,7 +72,7 @@ class MockAPI {
                         manage state effectively, and integrate with backend APIs. 
                         I am also interested in best practices for creating reusable components 
                         and ensuring smooth performance for complex UI elements.
-                    """
+                    """, id: "1"
                 ),
                 Topic(
                     title: "Understanding Backend APIs",
@@ -74,7 +85,7 @@ class MockAPI {
                         handling authentication, and managing network calls. 
                         Additionally, I am interested in how to deal with errors, 
                         retry failed requests, and ensure secure data transfer between the app and server.
-                    """
+                    """, id: "2"
                 ),
                 Topic(
                     title: "Mastering UIKit",
@@ -86,7 +97,7 @@ class MockAPI {
                         How do you ensure responsiveness and smooth animations in your app? 
                         What strategies do you recommend for organizing view controllers, 
                         handling layout constraints programmatically, and optimizing performance in complex apps?
-                    """
+                    """, id: "3"
                 ),
                 Topic(
                     title: "My First iOS App",
@@ -99,11 +110,11 @@ class MockAPI {
                         how to handle data persistence, and the best way to organize view controllers 
                         and models for scalability and maintainability. 
                         What tools and techniques should I consider when starting my first app?
-                    """
+                    """, id: "4"
                 )
             ]
         case .personal:
-
+            
             return []
         }
     }
