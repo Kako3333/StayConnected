@@ -158,14 +158,13 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
 
         let newTopic = Topic(
             title: subjectText,
-            tags: [subjectText],
+            tags: TagCell.tags,
             replies: 0,
             isAnswered: false,
             question: questionText
         )
         delegate?.didAddQuestion(newTopic)
         dismiss(animated: true, completion: nil)
-        print("pressed")
     }
     
     private func setupDismissKeyboardGesture() {
