@@ -89,6 +89,10 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
         sendButton.addTarget(self, action: #selector(sendButtonPressed), for: .touchUpInside)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        TagCell.tags = []
+    }
+    
     private func setupUI() {
         view.addSubview(headerView)
         headerView.addSubview(headerTitle)
@@ -161,11 +165,33 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             tags: TagCell.tags,
             replies: 0,
             isAnswered: false,
-            question: questionText
+            question: questionText,
+            id:  UUID().uuidString
         )
+        saveTopicToUserDefaults(newTopic)
+        
         delegate?.didAddQuestion(newTopic)
         dismiss(animated: true, completion: nil)
     }
+    
+    private func saveTopicToUserDefaults(_ topic: Topic) {
+        let encoder = JSONEncoder()
+        
+        if let encodedData = try? encoder.encode(topic) {
+            var savedTopics = getSavedTopics()
+            savedTopics.append(encodedData)
+            UserDefaults.standard.set(savedTopics, forKey: "savedTopics")
+        }
+        
+    }
+    
+    private func getSavedTopics() -> [Data] {
+            if let savedData = UserDefaults.standard.array(forKey: "savedTopics") as? [Data] {
+                return savedData
+            }
+            return []
+        }
+    
     
     private func setupDismissKeyboardGesture() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -213,5 +239,4 @@ class AddQuestionVC: UIViewController, UITableViewDelegate, UITableViewDataSourc
             return UITableViewCell()
         }
     }
-    
 }

@@ -30,10 +30,7 @@ struct Reply: Codable {
 class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     private var topic: Topic?
-    private var replies: [Reply] = [
-        Reply(profilePicData: UIImage(named: "pfp")!.pngData()!, userName: "Alice", text: "Great work!", date: "Today", status: ""),
-        Reply(profilePicData: UIImage(named: "pfp")!.pngData()!, userName: "Bob", text: "Thanks!", date: "Yesterday", status: "")
-    ] {
+    private var replies: [Reply] = [] {
         didSet {
             replyTableView.reloadData()
         }
@@ -121,8 +118,10 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
         setupUI()
         setupTableView()
         setupDismissKeyboardGesture()
-        //userdefaulsFunc
         loadReplies()
+        //dasavebuli replys washla gasatestad
+//        UserDefaults.standard.removeObject(forKey: "savedReplies")
+//        UserDefaults.standard.synchronize()
     }
     
     private func setupUI() {
@@ -186,8 +185,6 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
         
         replies.append(newReply)
         saveReplies()
-        replyTableView.reloadData()
-        replyTextField.text = nil
         
         DispatchQueue.main.async {
             self.replyTableView.reloadData()
@@ -196,37 +193,44 @@ class QuestionDetailsVC: UIViewController, UITableViewDataSource, UITableViewDel
     }
     
     func saveReplies() {
+        guard let topicId = topic?.id else { return }
+        
         let encoder = JSONEncoder()
         do {
             var repliesToSave = replies
-            
-            // Convert the UIImage to Data for each reply
             for index in repliesToSave.indices {
                 if let image = repliesToSave[index].profilePic {
-                    repliesToSave[index].profilePicData = image.pngData() ?? Data() // Convert to PNG data
+                    repliesToSave[index].profilePicData = image.pngData() ?? Data()
                 }
             }
             
             let data = try encoder.encode(repliesToSave)
-            UserDefaults.standard.set(data, forKey: "savedReplies")
+            
+            var savedReplies = UserDefaults.standard.dictionary(forKey: "savedReplies") as? [String: Data] ?? [:]
+            savedReplies[topicId] = data
+            UserDefaults.standard.set(savedReplies, forKey: "savedReplies")
         } catch {
             print("Error saving replies: \(error)")
         }
     }
+
     
     
     func loadReplies() {
-        if let savedRepliesData = UserDefaults.standard.data(forKey: "savedReplies") {
+        guard let topicId = topic?.id else { return }
+        
+        if let savedRepliesData = UserDefaults.standard.dictionary(forKey: "savedReplies") as? [String: Data],
+           let topicRepliesData = savedRepliesData[topicId] {
             let decoder = JSONDecoder()
             do {
-                var decodedReplies = try decoder.decode([Reply].self, from: savedRepliesData)
-                
+                let decodedReplies = try decoder.decode([Reply].self, from: topicRepliesData)
                 replies = decodedReplies
             } catch {
                 print("Error loading replies: \(error)")
             }
         }
     }
+
     
     
     func configure(with topic: Topic) {

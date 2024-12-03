@@ -18,7 +18,6 @@ class TagsCell: UITableViewCell {
         }
     }
     
-    var onTagRemoved: ((String) -> Void)?
     var selectedTagsCell: TagCell?
     
     private let tagsCollection: UICollectionView = {

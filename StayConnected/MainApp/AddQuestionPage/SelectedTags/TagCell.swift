@@ -13,7 +13,6 @@ class TagCell: UITableViewCell {
     
     static var tags: [String] = [] {
         didSet {
-            print(tags.count)
             NotificationCenter.default.post(name: .tagsUpdated, object: nil)
         }
     }

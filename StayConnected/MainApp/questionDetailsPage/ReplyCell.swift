@@ -106,5 +106,6 @@ class ReplyCell: UITableViewCell {
         dateReplied.text = reply.date
         statusLabel.text = reply.status
         statusLabel.textColor = reply.status == "Accepted" ? .backgroundColor : .white
+    
     }
 }
