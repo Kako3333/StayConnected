@@ -40,7 +40,7 @@ class HomeViewController: UIViewController {
             label.textColor = UIColor(hex: "4E53A2")
             label.textAlignment = .center
             label.backgroundColor = UIColor(hex: "EDEBFF")
-            label.layer.cornerRadius = 8
+            label.layer.cornerRadius = 14
             label.layer.masksToBounds = true
             label.translatesAutoresizingMaskIntoConstraints = false
             label.heightAnchor.constraint(equalToConstant: 28).isActive = true

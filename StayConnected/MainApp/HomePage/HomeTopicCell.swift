@@ -105,7 +105,7 @@ class HomeTopicCell: UITableViewCell {
             tagLabel.font = UIFont.systemFont(ofSize: 12, weight: .medium)
             tagLabel.textColor = UIColor(hex: "4E53A2")
             tagLabel.backgroundColor = UIColor(hex: "EDEBFF")
-            tagLabel.layer.cornerRadius = 8
+            tagLabel.layer.cornerRadius = 14
             tagLabel.clipsToBounds = true
             tagLabel.textAlignment = .center
             tagLabel.setContentHuggingPriority(.required, for: .horizontal)
