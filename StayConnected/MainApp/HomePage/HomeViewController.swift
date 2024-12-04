@@ -85,6 +85,9 @@ class HomeViewController: UIViewController {
         setupUI()
         setupBindings()
         viewModel.loadTopics(for: .general)
+        //damatebuli topicebis washla gasatestad
+//        UserDefaults.standard.removeObject(forKey: "savedTopics")
+//        UserDefaults.standard.synchronize()
     }
     
     private func setupUI() {

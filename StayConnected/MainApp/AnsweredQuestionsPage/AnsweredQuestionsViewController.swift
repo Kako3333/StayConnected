@@ -82,7 +82,7 @@ extension AnsweredQuestionsViewController: UITableViewDelegate, UITableViewDataS
             return UITableViewCell()
         }
         let answeredQuestion = viewModel.questions[indexPath.row]
-        let topic = Topic(title: answeredQuestion.title, tags: answeredQuestion.tags, replies: answeredQuestion.replies, isAnswered: answeredQuestion.isAnswered, question: answeredQuestion.title)
+        let topic = Topic(title: answeredQuestion.title, tags: answeredQuestion.tags, replies: answeredQuestion.replies, isAnswered: answeredQuestion.isAnswered, question: answeredQuestion.title, id: answeredQuestion.title)
         
         cell.configure(with: topic)
         return cell    }

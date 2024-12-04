@@ -51,6 +51,13 @@ class ReplyCell: UITableViewCell {
         return imageView
     }()
     
+    let statusLabel: UILabel = {
+        let statusLabel = UILabel()
+        statusLabel.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
+        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        return statusLabel
+    }()
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
@@ -59,6 +66,7 @@ class ReplyCell: UITableViewCell {
         replyView.addSubview(userNameLabel)
         replyView.addSubview(replyTextLabel)
         replyView.addSubview(dateReplied)
+        replyView.addSubview(statusLabel)
         
         NSLayoutConstraint.activate([
             replyView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -80,7 +88,10 @@ class ReplyCell: UITableViewCell {
             replyTextLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8),
             replyTextLabel.leftAnchor.constraint(equalTo: replyView.leftAnchor),
             replyTextLabel.rightAnchor.constraint(equalTo: replyView.rightAnchor),
-            replyTextLabel.bottomAnchor.constraint(equalTo: replyView.bottomAnchor, constant: -8)
+            replyTextLabel.bottomAnchor.constraint(equalTo: replyView.bottomAnchor, constant: -8),
+            
+            statusLabel.topAnchor.constraint(equalTo: replyView.topAnchor, constant: 5),
+            statusLabel.rightAnchor.constraint(equalTo: replyView.rightAnchor, constant: -5),
         ])
     }
     
@@ -93,5 +104,8 @@ class ReplyCell: UITableViewCell {
         userNameLabel.text = reply.userName
         replyTextLabel.text = reply.text
         dateReplied.text = reply.date
+        statusLabel.text = reply.status
+        statusLabel.textColor = reply.status == "Accepted" ? .backgroundColor : .white
+    
     }
 }

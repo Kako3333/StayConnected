@@ -11,9 +11,9 @@ class TagCell: UITableViewCell {
     
     static let identifier = "TagCell"
     
-    var tags: [String] = [] {
+    static var tags: [String] = [] {
         didSet {
-            print("dasdsa")
+            NotificationCenter.default.post(name: .tagsUpdated, object: nil)
         }
     }
     
@@ -48,10 +48,15 @@ class TagCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
         configureCollectionView()
+        NotificationCenter.default.addObserver(self, selector: #selector(tagsUpdated), name: .tagsUpdated, object: nil)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func tagsUpdated() {
+        selectedTagsCollection.reloadData()
     }
     
     private func setupUI() {
@@ -80,27 +85,33 @@ class TagCell: UITableViewCell {
         selectedTagsCollection.delegate = self
         selectedTagsCollection.dataSource = self
         selectedTagsCollection.register(SelectedTagsCell.self, forCellWithReuseIdentifier: SelectedTagsCell.identifier)
+        selectedTagsCollection.reloadData()
     }
     
 }
 
 extension TagCell: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tags.count
+        return TagCell.tags.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SelectedTagsCell.identifier, for: indexPath) as? SelectedTagsCell else {
             return UICollectionViewCell()
         }
-        cell.configure(with: tags[indexPath.row])
+        cell.configure(with: TagCell.tags[indexPath.item])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let tag = tags[indexPath.item]
-        let size = (tag as NSString).size(withAttributes: [.font: UIFont.systemFont(ofSize: 14)])
-        return CGSize(width: size.width + 20, height: 30)
+        let tag = TagCell.tags[indexPath.item]
+        let width = tag.size(withAttributes: [.font: UIFont.systemFont(ofSize: 14)]).width + 40
+        return CGSize(width: width, height: 25)
     }
+
+}
+
+extension Notification.Name {
+    static let tagsUpdated = Notification.Name("tagsUpdated")
 }
 
