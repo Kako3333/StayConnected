@@ -302,25 +302,48 @@ class SignupPageVC: UIViewController, UITextFieldDelegate {
     }
     
     @objc private func didTapSignUpButton() {
-           signupViewModel.fullName = fullNameTextField.text ?? ""
-           signupViewModel.email = emailTextField.text ?? ""
-           signupViewModel.password = passwordTextField.text ?? ""
-           signupViewModel.confirmPassword = confirmPasswordTextField.text ?? ""
-           
-           if signupViewModel.validateSignup() {
-               // Proceed with the sign-up process (e.g., show a success message or navigate)
-               print("Signup successful")
-               // navigationController?.pushViewController(NextViewController(), animated: true)
-           } else {
-               showAlert(message: "Please check your input. All fields must be valid.")
-           }
-       }
-       
-       private func showAlert(message: String) {
-           let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
-           alert.addAction(UIAlertAction(title: "OK", style: .default))
-           present(alert, animated: true)
-       }
+        signupViewModel.fullName = fullNameTextField.text ?? ""
+        signupViewModel.email = emailTextField.text ?? ""
+        signupViewModel.password = passwordTextField.text ?? ""
+        signupViewModel.confirmPassword = confirmPasswordTextField.text ?? ""
+        
+        if signupViewModel.validateSignup() {
+            print("Signup successful")
+            
+            // Call the signup method
+            signupViewModel.signup(fullName: signupViewModel.fullName,
+                                   email: signupViewModel.email,
+                                   password: signupViewModel.password) { result in
+                switch result {
+                case .success(let userResponse):
+                    print("User signed up successfully! ID: \(userResponse.id)")
+                    
+                    // If signup is successful, navigate to LoginPageVC
+                    DispatchQueue.main.async {
+                        let loginPageVC = LoginPageVC()
+                        self.navigationController?.pushViewController(loginPageVC, animated: true)
+                    }
+                    
+                case .failure(let error):
+                    print("Signup failed with error: \(error.localizedDescription)")
+                    
+                    DispatchQueue.main.async {
+                        self.showAlert(message: "Signup failed: \(error.localizedDescription)")
+                    }
+                }
+            }
+        } else {
+            // If validation fails, show the alert
+            showAlert(message: "Please check your input. All fields must be valid.")
+        }
+    }
+    
+    
+    private func showAlert(message: String) {
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
     
     func backButtonPressed() {
         navigationController?.popViewController(animated: true)
@@ -337,8 +360,5 @@ class SignupPageVC: UIViewController, UITextFieldDelegate {
         let iconName = passwordTextField.isSecureTextEntry ? "eye.slash.fill" : "eye.fill"
         toggleConfirmPasswordVisibilityButton.setImage(UIImage(systemName: iconName), for: .normal)
     }
-    
-    
-    
     
 }
