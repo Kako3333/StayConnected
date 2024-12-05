@@ -258,11 +258,11 @@ class LoginPageVC: UIViewController, UITextFieldDelegate {
             self?.showError(message)
         }
         
-        viewModel.onLoginSuccess = { [weak self] in
-            print("Login Successful!")
-            
-            NotificationCenter.default.post(name: .loginSuccess, object: nil)
-        }
+//        viewModel.onLoginSuccess = { [weak self] in
+//            print("Login Successful!")
+//            
+//            NotificationCenter.default.post(name: .loginSuccess, object: nil)
+//        }
     }
     
     private func showError(_ message: String) {
