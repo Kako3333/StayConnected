@@ -8,7 +8,13 @@ Stay Connected is an iOS app built using Xcode and UIKit, designed for developer
 ## Installation
 ## Usage
 ## Contributing
-## Introduction
+## Introduction![Uploading Screenshot 2024-12-07 at 21.15.18.png…]()
+
+<img width="211" alt="Screenshot 2024-12-07 at 21 14 33" src="https://github.com/user-attachments/assets/cc00085e-b0df-4890-a0ce-61e1d06ebb91">  
+<img width="214" alt="Screenshot 2024-12-07 at 21 15 55" src="https://github.com/user-attachments/assets/ba9ec120-4afc-482f-8301-82d619687002">
+
+<img width="214" alt="Screenshot 2024-12-07 at 21 16 38" src="https://github.com/user-attachments/assets/d55099f5-b092-4d70-adde-687d33dde3f8">
+
 ## The Stay Connected app provides a platform for developers to engage with each other, share knowledge, and build a community. The app allows users to:
 	•	Ask questions on various programming topics
 	•	Answer questions posted by other developers
